@@ -1,17 +1,25 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <header>
+        <img src="./assets/hero-icon.png"/>
+    </header>
+    <Hero/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Hero from './components/Hero.vue'
+import Vue from 'vue'
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+Vue.use(BootstrapVue);
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Hero
   }
 }
 </script>
@@ -23,6 +31,20 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  height: 600px;;
+}
+
+header {
+    background-color: #35441c;
+    height: 60px;
+    left: 15%;
+}
+
+
+img {
+    width: 50px;
+    height: 60px;
+    position: fixed;
+    left: 11%;
 }
 </style>
