@@ -1,7 +1,7 @@
 <template>
     <div class="HeroesList">
         <h1>List</h1>
-        <b-table striped hover :items="items" :fields="fields" caption-top>
+        <b-table striped hover :items="heroes" :fields="fields" caption-top>
         </b-table>
     </div>
 </template>
@@ -14,7 +14,12 @@ export default {
     data () {
         return {
             fields: ['name', 'hp', 'status', 'class', 'breed'],
-            items: []
+            items: [],
+        }
+    },
+    computed: {
+        heroes() {
+            return this.items;
         }
     },
     mounted () {
@@ -40,7 +45,8 @@ export default {
             axios
             .get("http://localhost:3001/heroes")
             .then(response => {
-                this.items= this.listFilter(response.data);
+                let newItem = this.listFilter(response.data)[this.listFilter(response.data).length-1];
+                this.items.push(newItem);
             });
         }
     }

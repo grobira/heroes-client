@@ -114,9 +114,9 @@ export default {
                 }
             }
 
-            axios.post('http://localhost:3001/heroes/', body).then( 
+            axios.post('http://localhost:3001/heroes/', body).then( () => {
                 this.$emit("heroAdded", "Hero Added")
-            );
+            });
         }
     }
 }

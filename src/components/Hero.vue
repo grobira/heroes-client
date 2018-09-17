@@ -7,7 +7,7 @@
         <b-container class="bv-example-row">
           <b-row>
               <b-col><AddNewHero @heroAdded="refreshHeroList" ref="heroList"/></b-col>
-              <b-col><HeroesList/></b-col>
+              <b-col><HeroesList ref="heroesList"/></b-col>
           </b-row>
         </b-container>        
       </b-tab>
@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     refreshHeroList() {
-      console.log('catch event');
+      this.$refs.heroesList.updateList()
     }
   }
 }
