@@ -7,22 +7,42 @@
 </template>
 
 <script>
+import axios from 'axios'
 
 export default {
     name: "HeroesList",
     data () {
         return {
-            fields: ['name', 'score', 'id'],
-            items: [
-                { name: "Bob" , score: 151, id: 287921873},
-                { name: "Nelson" , score: 700, id: 483948214},
-                { name: "Charles" , score: 45, id: 49837124},
-                { name: "Buck" , score: 77218 , id: 49837124},
-            ]
+            fields: ['name', 'hp', 'status', 'class', 'breed'],
+            items: []
         }
     },
     mounted () {
-        
+        axios
+        .get("http://localhost:3001/heroes")
+        .then(response => {
+            this.items= this.listFilter(response.data);
+        });
+    },
+    methods: {
+        listFilter(data) {
+            var list = [];
+            data.map( element => {
+                list.push({ name: element.firstname + " " + element.lastname, hp: Math.floor(element.hp), status: this.getStringStatus(element.status), class: element.class, breed: element.breed });
+            });
+            return list;
+        },
+        getStringStatus(status){
+            var statusStr = "Str: " + Math.floor(status.str) + " Int: " + Math.floor(status.int) + " Dex: " + Math.floor(status.dex) + " Lck: " + Math.floor(status.lck);
+            return statusStr;
+        },
+        updateList(){
+            axios
+            .get("http://localhost:3001/heroes")
+            .then(response => {
+                this.items= this.listFilter(response.data);
+            });
+        }
     }
 }
 </script>
@@ -32,6 +52,23 @@ export default {
 .HeroesList {
     width: 100%;
     height: 617px;
+    overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
 }
 </style>
 

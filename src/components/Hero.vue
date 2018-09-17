@@ -6,7 +6,7 @@
       <b-tab title="Heroes" active>
         <b-container class="bv-example-row">
           <b-row>
-              <b-col><AddNewHero/></b-col>
+              <b-col><AddNewHero @heroAdded="refreshHeroList" ref="heroList"/></b-col>
               <b-col><HeroesList/></b-col>
           </b-row>
         </b-container>        
@@ -34,6 +34,11 @@ export default {
   },
   props: {
     msg: String
+  },
+  methods: {
+    refreshHeroList() {
+      console.log('catch event');
+    }
   }
 }
 </script>

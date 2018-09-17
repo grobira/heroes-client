@@ -4,14 +4,18 @@
         <template>
           <b-container fluid>
             <b-row class="hero-form-row">
-              <b-col sm="3"><label>Name :</label></b-col>
-              <b-col sm="9"><b-form-input type="text"></b-form-input></b-col>
+              <b-col sm="3"><label>First Name :</label></b-col>
+              <b-col sm="9"><b-form-input type="text" v-model="firstname"></b-form-input></b-col>
+            </b-row>
+            <b-row class="hero-form-row">
+              <b-col sm="3"><label>Last Name :</label></b-col>
+              <b-col sm="9"><b-form-input type="text" v-model="lastname"></b-form-input></b-col>
             </b-row>
             <b-row class="hero-form-row">
                 <b-col sm="3"><label>Class :</label></b-col>
                 <b-col sm="9">
                     <b-form-group>
-                        <b-form-select :options="classNames" required></b-form-select>
+                        <b-form-select :options="classNames" required v-model="selectClass"></b-form-select>
                     </b-form-group>
                 </b-col>
             </b-row>
@@ -19,32 +23,32 @@
               <b-col sm="3"><label>Breed :</label></b-col>
               <b-col sm="9">
                     <b-form-group>
-                        <b-form-select :options="breeds" required></b-form-select>
+                        <b-form-select :options="breeds" required v-model="selectBreed"></b-form-select>
                     </b-form-group>
                 </b-col>
             </b-row>
             <b-row class="hero-form-row">Initial Status</b-row>
             <b-row class="hero-form-row">
               <b-col sm="3"><label>Str :</label></b-col>
-              <b-col sm="9"><input class="slider" type="range" v-model="heroStr">{{heroStr}}</b-col>
+              <b-col sm="9"><input class="slider" type="range" :max="pointsAvaliable.str" v-model="heroStr">{{heroStr}}</b-col>
             </b-row>
             <b-row class="hero-form-row">
               <b-col sm="3"><label>Int :</label></b-col>
-              <b-col sm="9"><input class="slider" type="range" v-model="heroInt">{{heroInt}}</b-col>
+              <b-col sm="9"><input class="slider" type="range" :max="pointsAvaliable.int" v-model="heroInt">{{heroInt}}</b-col>
             </b-row>
             <b-row class="hero-form-row">
               <b-col sm="3"><label>Lck :</label></b-col>
-              <b-col sm="9"><input class="slider" type="range" v-model="heroLck">{{heroLck}}</b-col>
+              <b-col sm="9"><input class="slider" type="range" :max="pointsAvaliable.lck" v-model="heroLck">{{heroLck}}</b-col>
             </b-row>
             <b-row class="hero-form-row">
               <b-col sm="3"><label>Dex :</label></b-col>
-              <b-col sm="9"><input type="range" min="1" max="100" value="50" class="slider" v-model="heroDex">{{heroDex}}</b-col>
+              <b-col sm="9"><input type="range" class="slider" :max="pointsAvaliable.dex" v-model="heroDex">{{heroDex}}</b-col>
             </b-row>
             <b-row class="hero-form-row">
-                <b-progress class="hero-form-bar" :value="pointsAvaliable" :min=0 :max="max" show-progress></b-progress>
+                <b-progress class="hero-form-bar" :value="pointsAvaliable.total" :min=0 :max="max" show-progress></b-progress>
             </b-row>
             <b-row class="hero-form-row">
-                <b-button type="submit" variant="primary" class="hero-form-button">Submit</b-button>
+                <b-button type="submit" variant="primary" class="hero-form-button" @click="addHero">Submit</b-button>
             </b-row>
           </b-container>
         </template>
@@ -59,17 +63,26 @@ export default {
     data () {
         return {
             classNames: [],
-            breeds: [ 'human', 'elf'],
+            breeds: [],
             max: 100,
             heroLck: 0,
             heroInt: 0,
             heroStr: 0,
             heroDex: 0,
+            selectBreed: '',
+            selectClass: '',
+            firstname: '',
+            lastname: '',
         }
     },
     computed :{
         pointsAvaliable() {
-            return 100 - this.heroStr - this.heroInt - this.heroLck - this.heroDex;
+            return { total: this.max - this.heroStr - this.heroInt - this.heroLck - this.heroDex,
+                    str: this.max - this.heroInt - this.heroLck - this.heroDex,
+                    int: this.max - this.heroStr - this.heroLck - this.heroDex,
+                    lck: this.max - this.heroInt - this.heroStr - this.heroDex,
+                    dex: this.max - this.heroInt - this.heroLck - this.heroStr
+                    };
         },
     },
     mounted () {
@@ -85,6 +98,26 @@ export default {
                 this.breeds.push(element.name);
             });
         });
+    },
+    methods: {
+        addHero(){
+            var body = {
+                "firstname" : this.firstname,
+                "lastname" : this.lastname,
+                "class": this.selectClass,
+                "breed": this.selectBreed,
+                "status" : {
+                    "str": this.heroStr,
+                    "int": this.heroInt,
+                    "lck": this.heroLck,
+                    "dex": this.heroDex
+                }
+            }
+
+            axios.post('http://localhost:3001/heroes/', body).then( 
+                this.$emit("heroAdded", "Hero Added")
+            );
+        }
     }
 }
 </script>
